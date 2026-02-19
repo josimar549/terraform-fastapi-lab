@@ -1,0 +1,9 @@
+# terraform.tfvars.example
+#
+# Copy this file to terraform.tfvars and customize values
+# cp terraform.tfvars.example terraform.tfvars
+
+aws_region    = "us-east-1"      # AWS region
+project_name  = "devops-lab"     # Project name prefix
+environment   = "dev"            # Environment (dev/staging/prod)
+instance_type = "t2.micro"       # Instance type (free tier)
