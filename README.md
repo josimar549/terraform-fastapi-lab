@@ -1,155 +1,189 @@
-# ☁️ Terraform AWS Infrastructure Lab — FastAPI Deployment
+# ☁️ Terraform AWS Infrastructure Lab
 
 ![Terraform](https://img.shields.io/badge/terraform-1.0+-blue)
 ![AWS](https://img.shields.io/badge/AWS-free_tier-orange)
-![Docker](https://img.shields.io/badge/docker-container-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-API-green)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-End-to-end **Infrastructure as Code (IaC)** project using Terraform to provision AWS resources and deploy a **FastAPI application** in a Docker container.
+Infrastructure as Code (IaC) project using Terraform to provision AWS resources. Demonstrates cloud infrastructure management, security best practices, and automated deployments.
 
-**100% Free Tier Compatible** — All AWS resources stay within free tier limits.
+**100% Free Tier Compatible** — All resources stay within AWS free tier limits.
 
 ---
 
-## 🚀 What This Provisions
+## What This Provisions
 
-- **EC2 Instance** — t2.micro or t3.micro Ubuntu server (free tier)  
-- **Security Group** — SSH (22), HTTP (80), and App port (8000)  
-- **S3 Bucket** — Encrypted storage for backups with versioning and lifecycle policies  
-- **Automated Setup** — User data installs Docker, Python, and dependencies  
-- **FastAPI App** — Minimal API containerized with Docker, served via Uvicorn  
+- **EC2 Instance** — t2.micro Ubuntu server (free tier)
+- **Security Group** — Firewall rules for SSH, HTTP, and custom app port
+- **S3 Bucket** — Encrypted storage for backups with lifecycle policies
+- **Automated Setup** — User data script installs Docker and dependencies
 
-Example API response:
+---
 
-```json
-{"message": "Hello from FastAPI"}
-🛠 Prerequisites
-AWS Account — Sign up at aws.amazon.com/free
+## Prerequisites
 
-AWS CLI
+### 1. AWS Account
+Sign up at [aws.amazon.com/free](https://aws.amazon.com/free) (12 months free tier)
 
+### 2. Install AWS CLI
+```bash
+# macOS
 brew install awscli
+
+# Verify installation
 aws --version
-Configure AWS Credentials
+````
 
+### 3. Configure AWS Credentials
+
+```bash
 aws configure
-AWS Access Key ID
+```
 
-AWS Secret Access Key
+Enter:
 
-Default region: us-east-1
+* **AWS Access Key ID**: From AWS Console → IAM → Users → Security Credentials
+* **AWS Secret Access Key**: Same place
+* **Default region**: `us-east-1`
+* **Default output format**: `json`
 
-Default output format: json
+### 4. Install Terraform
 
-Install Terraform
-
+```bash
+# macOS
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
+
+# Verify
 terraform version
-Install Docker (local optional)
+```
 
-docker --version
-⚡ Quick Start
-1. Initialize Terraform
+---
+
+## Quick Start
+
+### Step 1: Initialize Terraform
+
+```bash
 terraform init
-2. Preview Changes
+```
+
+### Step 2: Preview Changes
+
+```bash
 terraform plan
-3. Apply Infrastructure
+```
+
+### Step 3: Provision Infrastructure
+
+```bash
 terraform apply
-Type yes to provision:
+```
 
-EC2 instance with Security Group
+Type `yes` when prompted. Terraform will:
 
-S3 bucket with versioning
+1. Create security group
+2. Launch EC2 instance
+3. Create S3 bucket
+4. Configure networking
 
-Output public IP and connection details
+Takes ~2-3 minutes.
 
-4. Connect to EC2
-ssh -i ~/Downloads/devops-lab-key.pem ubuntu@<instance_public_ip>
-5. Deploy FastAPI App
-Option A — Manual
-Copy files to EC2 and build Docker container:
+### Step 4: View Outputs
 
-scp -i ~/Downloads/devops-lab-key.pem -r ./fastapi-test ubuntu@<instance_public_ip>:~/fastapi-test
-ssh -i ~/Downloads/devops-lab-key.pem ubuntu@<instance_public_ip>
-cd ~/fastapi-test
+```bash
+terraform output
+```
+
+You’ll see:
+
+* Instance public IP
+* SSH connection command
+* S3 bucket name
+* API URL (once deployed)
+
+### Step 5: Connect to EC2
+
+```bash
+# SSH into server (replace with actual IP)
+ssh -i ~/Downloads/devops-lab-key.pem ubuntu@<instance-public-ip>
+
+# Check Docker
+docker --version
+```
+
+---
+
+## Running FastAPI
+
+1. Make sure your `main.py` is in the project folder:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello from FastAPI"}
+```
+
+2. Build and run Docker container:
+
+```bash
 sudo docker build -t fastapi-test .
 sudo docker run -d -p 8000:8000 fastapi-test
-Visit:
+```
 
-http://<instance_public_ip>:8000
-Option B — One Command Deployment
-Automatically copy, build, and run FastAPI on EC2:
+3. Access in browser:
 
-tar -czf fastapi-test.tar.gz ./fastapi-test
-scp -i ~/Downloads/devops-lab-key.pem fastapi-test.tar.gz ubuntu@<instance_public_ip>:~/
-ssh -i ~/Downloads/devops-lab-key.pem ubuntu@<instance_public_ip> \
-"tar -xzf fastapi-test.tar.gz && cd fastapi-test && sudo docker build -t fastapi-test . && sudo docker run -d -p 8000:8000 fastapi-test"
-Combines upload, extraction, Docker build, and container run in a single step
+```
+http://<instance-public-ip>:8000
+```
 
-FastAPI API is immediately available on port 8000
+---
 
-📂 Project Structure
-terraform-aws-lab/
+## Project Structure
+
+```
+terraform-fastapi-lab/
 ├── main.tf                    # Main infrastructure config
 ├── variables.tf               # Input variable definitions
 ├── outputs.tf                 # Output values
 ├── terraform.tfvars           # Variable values (git-ignored)
 ├── terraform.tfvars.example   # Example values
-├── Dockerfile                 # FastAPI + Docker container
-├── main.py                    # FastAPI app
-├── README.md
+├── Dockerfile                 # FastAPI Docker setup
+├── main.py                    # FastAPI app code
+├── README.md                  # This file
 └── .gitignore                 # Ignore state files and secrets
-🔐 Security Best Practices
-S3 bucket blocks public access
+```
 
-S3 bucket versioning enabled
+---
 
-Security group restricts inbound traffic to specific ports
+## Cleanup
 
-Default tags applied to all resources
+**IMPORTANT:** Always destroy resources when done to avoid charges:
 
-User data script fails fast (set -e)
-
-💡 Next Steps / Enhancements
-Automate Docker deployment with Terraform user_data
-
-Add Route53 domain + HTTPS with ACM
-
-Multi-environment support (dev/staging/prod)
-
-CI/CD integration with GitHub Actions
-
-Monitoring with CloudWatch alarms and dashboards
-
-💰 Cost Estimation
-Free tier: $0
-After free tier (approx): ~$9/month
-
-EC2 t2.micro: ~$8/month
-
-S3 storage (5GB): ~$0.12/month
-
-Data transfer: ~$1/month
-
-Always destroy resources to avoid charges:
-
+```bash
 terraform destroy
-🏆 Skills Demonstrated
-Terraform / Infrastructure as Code (IaC)
+```
 
-AWS EC2, S3, Security Groups
+Type `yes` to confirm. This deletes:
 
-Docker containerization
+* EC2 instance
+* Security group
+* S3 bucket (and contents)
 
-Python FastAPI backend
+---
 
-Public app deployment and networking
+## Author
 
-Author
-Josimar Arias — Software Engineer · Mesa, AZ
-josimar85209@gmail.com · GitHub · Portfolio
+**Josimar Arias** — Software Engineer · Mesa, AZ
+[josimar85209@gmail.com](mailto:josimar85209@gmail.com) · [GitHub](https://github.com/josimar549) · [Portfolio](https://josimar549.github.io)
 
-License
+---
+
+## License
+
 MIT
+
+
