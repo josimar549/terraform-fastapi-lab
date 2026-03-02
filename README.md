@@ -1,74 +1,108 @@
-☁️ Terraform AWS + FastAPI Lab
+Perfect! Let’s make your **README** clear, up-to-date, and show your FastAPI + Terraform project live. Here’s a polished version you can copy into `README.md`:
 
-This project demonstrates Infrastructure as Code (IaC) using Terraform to deploy an AWS EC2 instance running a FastAPI app in Docker, along with an S3 bucket for backups.
+---
 
-All resources are AWS Free Tier compatible.
+# ☁️ Terraform AWS + FastAPI Lab
 
-🔹 Features
+This project demonstrates **Infrastructure as Code (IaC)** using Terraform to deploy an **AWS EC2 instance** running a **FastAPI app** in Docker, along with an **S3 bucket** for backups.
 
-EC2 Instance — Ubuntu 22.04 server (t2.micro)
+All resources are **AWS Free Tier compatible**.
 
-Security Group — Allows SSH, HTTP, and FastAPI port 8000
+---
 
-S3 Bucket — Encrypted storage with versioning and 30-day lifecycle
+## 🔹 Features
 
-Automated Setup — EC2 installs Docker, Docker Compose, and prepares /opt/app
+* **EC2 Instance** — Ubuntu 22.04 server (t2.micro)
+* **Security Group** — Allows SSH, HTTP, and FastAPI port 8000
+* **S3 Bucket** — Encrypted storage with versioning and 30-day lifecycle
+* **Automated Setup** — EC2 installs Docker, Docker Compose, and prepares `/opt/app`
+* **FastAPI App** — Minimal API returning `{"message":"Hello from FastAPI"}`
 
-FastAPI App — Minimal API returning {"message":"Hello from FastAPI"}
+---
 
-🛠️ Prerequisites
+## 🛠️ Prerequisites
 
-AWS Account – Sign up here
+1. **AWS Account** – [Sign up here](https://aws.amazon.com/free)
+2. **Install AWS CLI**
 
-Install AWS CLI
-
+```bash
 # macOS
 brew install awscli
 aws --version
+```
 
-Configure AWS credentials
+3. **Configure AWS credentials**
 
+```bash
 aws configure
+```
 
-Install Terraform
+4. **Install Terraform**
 
+```bash
 # macOS
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
 terraform version
-🚀 Quick Start
-1. Initialize Terraform
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Initialize Terraform
+
+```bash
 terraform init
-2. Preview changes
+```
+
+### 2. Preview changes
+
+```bash
 terraform plan
-3. Provision infrastructure
+```
+
+### 3. Provision infrastructure
+
+```bash
 terraform apply
+```
 
-Type yes when prompted. This will:
+Type `yes` when prompted. This will:
 
-Create security group
+* Create security group
+* Launch EC2 instance
+* Create S3 bucket
 
-Launch EC2 instance
+---
 
-Create S3 bucket
+### 4. View outputs
 
-4. View outputs
+```bash
 terraform output
+```
 
 You’ll get:
 
-EC2 public IP
+* EC2 public IP
+* SSH connection command
+* S3 bucket name
+* FastAPI URL
 
-SSH connection command
+---
 
-S3 bucket name
+### 5. Connect to EC2
 
-FastAPI URL
-
-5. Connect to EC2
+```bash
 ssh -i devops-lab-key.pem ubuntu@<instance-public-ip>
 docker --version
-6. Deploy FastAPI with Docker
+```
+
+---
+
+### 6. Deploy FastAPI with Docker
+
+```bash
 # Move into app folder
 cd /opt/app
 
@@ -77,16 +111,29 @@ sudo docker build -t fastapi-app .
 
 # Run container
 sudo docker run -d -p 8000:8000 fastapi-app
+```
 
-Visit in browser: http://<instance-public-ip>:8000 → should show:
+Visit in browser: `http://<instance-public-ip>:8000` → should show:
 
+```json
 {"message":"Hello from FastAPI"}
-7. Cleanup
+```
 
-IMPORTANT: Destroy resources when done to avoid charges:
+---
 
+### 7. Cleanup
+
+**IMPORTANT**: Destroy resources when done to avoid charges:
+
+```bash
 terraform destroy
-📂 Project Structure
+```
+
+---
+
+### 📂 Project Structure
+
+```
 terraform-fastapi-lab/
 ├── main.tf                  # Terraform config
 ├── variables.tf             # Terraform variables
@@ -97,10 +144,14 @@ terraform-fastapi-lab/
 ├── main.py                  # FastAPI app code
 ├── README.md                # This file
 └── .gitignore               # Ignored files
-📝 Author
+```
 
-Josimar Arias — Software Engineer · Mesa, AZ
-📧 josimar85209@gmail.com
- · GitHub Portfolio
+---
 
-License: MIT
+### 📝 Author
+
+**Josimar Arias** — Software Engineer · Mesa, AZ
+📧 [josimar85209@gmail.com](mailto:josimar85209@gmail.com) · [GitHub Portfolio](https://github.com/josimar549)
+
+License: **MIT**
+
