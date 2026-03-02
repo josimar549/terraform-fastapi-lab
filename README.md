@@ -1,7 +1,3 @@
-Perfect! Let’s make your **README** clear, up-to-date, and show your FastAPI + Terraform project live. Here’s a polished version you can copy into `README.md`:
-
----
-
 # ☁️ Terraform AWS + FastAPI Lab
 
 This project demonstrates **Infrastructure as Code (IaC)** using Terraform to deploy an **AWS EC2 instance** running a **FastAPI app** in Docker, along with an **S3 bucket** for backups.
